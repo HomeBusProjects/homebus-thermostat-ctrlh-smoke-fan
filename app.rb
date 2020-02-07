@@ -33,7 +33,7 @@ class SmokeOStatHomeBusApp < HomeBusApp
   end
 
   def work!
-    if !@subscribed
+    unless @subscribed
       subscribe! '/tick'
       subscribe_to_devices! @smoke_sensor_uuid, @access_uuid
       @subscribed = true
@@ -139,20 +139,23 @@ begin
       fan_should_be_on = true
     end
 
-    if tick && _should_update_fan_state?(tick) && !options[:test]
+    if tick && _should_update_fan_state?(tick)
       puts 'getting fan state'
       @current_state = _fan_state
       puts @current_state
     end
 
     if fan_should_be_on.nil?
+      if @off_time < Time.now.to_i
+        @off_time = Time.now_to_i + 5*60
+      end
       return
     end
 
     puts 'cs: ', @current_state, 'fsbo: ', fan_should_be_on, 'triggers: ', triggers
 
     if fan_should_be_on && @current_state == 'on'
-      @off_time = Time.now.to_i + 15*60
+      @off_time = Time.now.to_i + 5*60
       return
     end
 
