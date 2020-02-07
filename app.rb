@@ -147,6 +147,9 @@ begin
 
     if fan_should_be_on.nil?
       if @off_time < Time.now.to_i
+        if options[:verbose]
+          puts 'setting fan timeout for +5 minutes from now'
+        end
         @off_time = Time.now.to_i + 5*60
       end
       return
