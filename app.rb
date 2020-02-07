@@ -64,12 +64,14 @@ class SmokeOStatHomeBusApp < HomeBusApp
     @off_time > 0 && tick[:epoch] > @off_time
   end
 
-  def _is_msg_time?(msg)
-    @last_time_update = msg['org.homebus.tick']
-  end
-
   def _is_stale?(time)
     time.nil? || Time.now - time > 5*60
+  end
+
+  def _is_msg_time?(msg)
+    if msg[:'org.homebus.tick']
+      @last_time_update = msg[:'org.homebus.tick']
+    end
   end
 
   def _is_msg_air?(msg)
@@ -108,6 +110,10 @@ begin
     light = _is_msg_light? msg
     access = _is_msg_access? msg
 
+    if tick.nil? || tick[:second] == 0
+      pp msg
+    end
+
     if tick && _should_still_be_running?(tick)
       fan_should_be_on = false
       triggers.push 'on time exceeded'
@@ -139,11 +145,11 @@ begin
       puts @current_state
     end
 
-    puts 'cs: ', @current_state, 'fsbo: ', fan_should_be_on, 'triggers: ', triggers
-
     if fan_should_be_on.nil?
       return
     end
+
+    puts 'cs: ', @current_state, 'fsbo: ', fan_should_be_on, 'triggers: ', triggers
 
     if fan_should_be_on && @current_state == 'on'
       @off_time = Time.now.to_i + 15*60
