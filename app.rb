@@ -147,7 +147,7 @@ begin
 
     if fan_should_be_on.nil?
       if @off_time < Time.now.to_i
-        @off_time = Time.now_to_i + 5*60
+        @off_time = Time.now.to_i + 5*60
       end
       return
     end
