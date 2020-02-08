@@ -130,7 +130,7 @@ begin
     end
 
     if _is_smoky?
-      triggers.push "air at #{@last_air_update[:pm1]}/@last_air_update[:pm25]}/@last_air_update[:pm10] (> #{@smoke_threshold})"
+      triggers.push "air at #{@last_air_update[:pm1]}/#{@last_air_update[:pm25]}/#{@last_air_update[:pm10]} (> #{@smoke_threshold})"
       fan_should_be_on = true
     end
 
