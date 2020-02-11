@@ -157,6 +157,11 @@ begin
 
     puts 'cs: ', @current_state, 'fsbo: ', fan_should_be_on, 'triggers: ', triggers
 
+    # TODO: code up some logic to complain once if we can't reach the fan
+    if @current_state.nil?
+      return
+    end
+
     if fan_should_be_on && @current_state == 'on'
       @off_time = Time.now.to_i + 5*60
       return
